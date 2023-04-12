@@ -32,35 +32,12 @@ export default function Home() {
 
     setLoading(true);
 
-    const searchResponse = await fetch("/api/search", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ query, matches: matchCount })
-    });
-
-    if (!searchResponse.ok) {
-      setLoading(false);
-      throw new Error(searchResponse.statusText);
-    }
-
-    const results: WBWChunk[] = await searchResponse.json();
-
-    setChunks(results);
-
-    const prompt = endent`
-    Use the following passages to provide an answer to the query: "${query}"
-
-    ${results?.map((d: any) => d.content).join("\n\n")}
-    `;
-
     const answerResponse = await fetch("/api/answer", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ query })
     });
 
     if (!answerResponse.ok) {
