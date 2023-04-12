@@ -23,46 +23,45 @@ export default function Home() {
 
   const handleAnswer = async () => {
     if (!query) {
-      alert("Please enter a query.");
+      alert('Please enter a query.');
       return;
     }
-
-    setAnswer("");
+  
+    setAnswer('');
     setChunks([]);
-
+  
     setLoading(true);
-
-    const answerResponse = await fetch("/api/answer", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ query })
-    });
-
-    if (!answerResponse.ok) {
+  
+    // Create a WebSocket connection to the '/chat' endpoint
+    const socket = new WebSocket(`${BACKEND_URL}/chat`);
+  
+    // Set up the WebSocket event listeners
+    socket.onopen = (event) => {
+      // Send the query once the WebSocket connection is open
+      socket.send(query);
+    };
+  
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
       setLoading(false);
-      throw new Error(answerResponse.statusText);
-    }
-
-    const data = answerResponse.body;
-
-    if (!data) {
-      return;
-    }
-
-    setLoading(false);
-
-    const reader = data.getReader();
-    const decoder = new TextDecoder();
-    let done = false;
-
-    while (!done) {
-      const { value, done: doneReading } = await reader.read();
-      done = doneReading;
-      const chunkValue = decoder.decode(value);
-      setAnswer((prev) => prev + chunkValue);
-    }
+  
+      // Check if the received data has a 'message' key
+      if (data.hasOwnProperty('message') && data.sender === 'bot') {
+        // Update the answer with the received message
+        setAnswer((prev) => prev + data.message);
+      }
+  
+      // Close the WebSocket connection if the server has indicated that it's done sending messages
+      if (data.type && data.type === 'end') {
+        setLoading(false);
+        socket.close();
+      }
+    };
+  
+    socket.onerror = (error) => {
+      setLoading(false);
+      console.error('WebSocket error:', error);
+    };
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -80,7 +79,6 @@ export default function Home() {
     localStorage.removeItem("WBW_KEY");
     localStorage.removeItem("WBW_MATCH_COUNT");
 
-    setApiKey("");
     setMatchCount(5);
   };
 
@@ -158,22 +156,25 @@ export default function Home() {
                     </div>
                   </>
 
-                <div className="font-bold text-2xl mt-6">Passages</div>
-                <div className="animate-pulse mt-2">
-                  <div className="h-4 bg-gray-300 rounded"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                  <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                </div>
+                {chunks.length ? (
+                  <>
+                    <div className="font-bold text-2xl mt-6">Passages</div>
+                    <div className="animate-pulse mt-2">
+                      <div className="h-4 bg-gray-300 rounded"></div>
+                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                    </div>
+                  </>) : ''}
               </div>
             ) : answer ? (
-              <div className="mt-6">
+              <div className="mt-6 w-full">
                 <div className="font-bold text-2xl mb-2">Answer</div>
                 <Answer text={answer} />
 
                 <div className="mt-6 mb-16">
-                  <div className="font-bold text-2xl">Passages</div>
+                {chunks.length ? (<div className="font-bold text-2xl">Passages</div>) : ''}
 
                   {chunks.map((chunk, index) => (
                     <div key={index}>
