@@ -127,6 +127,7 @@ export default function Home() {
         <div className="flex-1 overflow-auto">
           <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4 sm:pt-8">
 
+              <div className="mt-6 text-center text-lg">{`AI-powered Q & A, backed by DFAT reports`}</div>
               <div className="relative w-full mt-4">
                 <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
 
@@ -173,7 +174,7 @@ export default function Home() {
                     </div>
                   </>) : ''}
               </div>
-            ) : answer ? (
+            ) : (
               <div className="mt-6 w-full">
                 <div className="font-bold text-2xl mb-2">Answer</div>
                 <Answer text={answer} />
@@ -186,7 +187,7 @@ export default function Home() {
                       <div className="mt-4 border border-zinc-600 rounded-lg p-4">
                         <div className="flex justify-between">
                           <div className="flex items-center">
-                            <div className="ml-4">
+                            <div>
                               <div className="font-bold text-xl">{chunk.title}</div>
                             </div>
                           </div>
@@ -205,42 +206,6 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-            ) : chunks.length > 0 ? (
-              <div className="mt-6 pb-16">
-                <div className="font-bold text-2xl">Passages</div>
-                {chunks.map((chunk, index) => (
-                  <div key={index}>
-                    <div className="mt-4 border border-zinc-600 rounded-lg p-4">
-                      <div className="flex justify-between">
-                        <div className="flex items-center">
-                          <Image
-                            className="rounded-lg"
-                            src={getImage(chunk.post_title)}
-                            width={103}
-                            height={70}
-                            alt={chunk.post_title}
-                          />
-                          <div className="ml-4">
-                            <div className="font-bold text-xl">{chunk.post_title}</div>
-                            <div className="mt-1 font-bold text-sm">{chunk.post_date}</div>
-                          </div>
-                        </div>
-                        <a
-                          className="hover:opacity-50 ml-2"
-                          href={chunk.post_url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <IconExternalLink />
-                        </a>
-                      </div>
-                      <div className="mt-4">{chunk.content}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-6 text-center text-lg">{`AI-powered Q & A, backed by DFAT reports`}</div>
             )}
           </div>
         </div>

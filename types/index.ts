@@ -10,7 +10,6 @@ export type WBWPost = {
   content: string;
   length: number;
   tokens: number;
-  chunks: WBWChunk[];
 };
 
 export type DocumentChunk = {
