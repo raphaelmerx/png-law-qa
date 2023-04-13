@@ -13,15 +13,11 @@ export type WBWPost = {
   chunks: WBWChunk[];
 };
 
-export type WBWChunk = {
-  post_title: string;
-  post_url: string;
+export type DocumentChunk = {
+  title: string;
+  url: string;
   post_date: string | undefined;
-  post_type: "post" | "mini";
-  content: string;
-  content_length: number;
-  content_tokens: number;
-  embedding: number[];
+  content: string | undefined;
 };
 
 export type WBWJSON = {

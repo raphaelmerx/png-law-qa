@@ -1,6 +1,6 @@
 import { Answer } from "@/components/Answer/Answer";
 import { Footer } from "@/components/Footer";
-import { WBWChunk } from "@/types";
+import { DocumentChunk } from "@/types";
 import { getImage } from "@/utils/images";
 import { IconArrowRight, IconExternalLink, IconSearch } from "@tabler/icons-react";
 import endent from "endent";
@@ -15,9 +15,10 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [query, setQuery] = useState<string>("");
-  const [chunks, setChunks] = useState<WBWChunk[]>([]);
+  const [chunks, setChunks] = useState<DocumentChunk[]>([]);
   const [answer, setAnswer] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
 
   const [matchCount, setMatchCount] = useState<number>(5);
 
@@ -54,6 +55,9 @@ export default function Home() {
       // Close the WebSocket connection if the server has indicated that it's done sending messages
       if (data.type && data.type === 'end') {
         setLoading(false);
+      }
+      if (data.type && data.type === 'sources') {
+        setChunks(data.sources)
         socket.close();
       }
     };
@@ -61,6 +65,7 @@ export default function Home() {
     socket.onerror = (error) => {
       setLoading(false);
       console.error('WebSocket error:', error);
+      alert('An error occurred while trying to connect to the server. Please try again later.');
     };
   };
 
@@ -103,10 +108,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Wait But Why GPT</title>
+        <title>DFAT Q&A</title>
         <meta
           name="description"
-          content={`AI-powered search and chat for Tim Urban's blog "Wait But Why."`}
+          content={`AI-powered Q&A backed by DFAT reports`}
         />
         <meta
           name="viewport"
@@ -129,7 +134,7 @@ export default function Home() {
                   ref={inputRef}
                   className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                   type="text"
-                  placeholder="What is JSS4P?"
+                  placeholder="What is JSS4D?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -181,21 +186,13 @@ export default function Home() {
                       <div className="mt-4 border border-zinc-600 rounded-lg p-4">
                         <div className="flex justify-between">
                           <div className="flex items-center">
-                            <Image
-                              className="rounded-lg"
-                              src={getImage(chunk.post_title)}
-                              width={103}
-                              height={70}
-                              alt={chunk.post_title}
-                            />
                             <div className="ml-4">
-                              <div className="font-bold text-xl">{chunk.post_title}</div>
-                              <div className="mt-1 font-bold text-sm">{chunk.post_date}</div>
+                              <div className="font-bold text-xl">{chunk.title}</div>
                             </div>
                           </div>
                           <a
                             className="hover:opacity-50 ml-4"
-                            href={chunk.post_url}
+                            href={chunk.url}
                             target="_blank"
                             rel="noreferrer"
                           >
@@ -243,7 +240,7 @@ export default function Home() {
                 ))}
               </div>
             ) : (
-              <div className="mt-6 text-center text-lg">{`AI-powered search and chat for DFAT reports`}</div>
+              <div className="mt-6 text-center text-lg">{`AI-powered Q & A, backed by DFAT reports`}</div>
             )}
           </div>
         </div>

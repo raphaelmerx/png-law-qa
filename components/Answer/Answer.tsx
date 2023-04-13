@@ -6,23 +6,13 @@ interface AnswerProps {
 }
 
 export const Answer: React.FC<AnswerProps> = ({ text }) => {
-  const [words, setWords] = useState<string[]>([]);
-
-  useEffect(() => {
-    setWords(text.split(" "));
-  }, [text]);
+  const paragraphs = text.split('\n').map((paragraph, index) => (
+    <p key={index}>{paragraph}</p>
+  ));
 
   return (
     <div>
-      {words.map((word, index) => (
-        <span
-          key={index}
-          className={styles.fadeIn}
-          style={{ animationDelay: `${index * 0.001}s` }}
-        >
-          {word}{" "}
-        </span>
-      ))}
+       {paragraphs}
     </div>
   );
 };
