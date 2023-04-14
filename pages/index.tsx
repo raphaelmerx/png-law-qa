@@ -8,9 +8,11 @@ import endent from "endent";
 import Head from "next/head";
 import Image from "next/image";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import LogRocket from 'logrocket';
 
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+if (process.env.NODE_ENV === 'production') LogRocket.init('jymlud/chat-langchain-dfat');
 
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
