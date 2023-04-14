@@ -1,4 +1,4 @@
-import { IconBrandGithub, IconBrandTwitter } from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandLinkedin, IconBrandTwitter, IconExternalLink } from "@tabler/icons-react";
 import { FC } from "react";
 
 export const Footer: FC = () => {
@@ -16,16 +16,15 @@ export const Footer: FC = () => {
         >
           Raphaël Merx
         </a>
-        based on
+        based on 
         <a
           className="hover:opacity-50 ml-1"
           href="https://github.com/mckaywrigley/wait-but-why-gpt"
           target="_blank"
           rel="noreferrer"
         >
-          Mckay Wrigley
+          Wait but Why GPT
         </a>
-        {`'s work`}
         .
       </div>
 
@@ -46,6 +45,22 @@ export const Footer: FC = () => {
           rel="noreferrer"
         >
           <IconBrandGithub size={24} />
+        </a>
+        <a
+          className="flex items-center hover:opacity-50"
+          href="https://www.linkedin.com/in/raphaelmerx/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <IconBrandLinkedin size={24} />
+        </a>
+        <a
+          className="flex items-center hover:opacity-50"
+          href="https://www.rapha.dev"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <IconExternalLink size={24} />
         </a>
       </div>
     </div>

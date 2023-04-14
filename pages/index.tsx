@@ -1,5 +1,6 @@
 import { Answer } from "@/components/Answer/Answer";
 import { Footer } from "@/components/Footer";
+import { Navbar } from "@/components/Navbar";
 import { DocumentChunk } from "@/types";
 import { getImage } from "@/utils/images";
 import { IconArrowRight, IconExternalLink, IconSearch } from "@tabler/icons-react";
@@ -124,10 +125,9 @@ export default function Home() {
       </Head>
 
       <div className="flex flex-col h-screen">
+        <Navbar />
         <div className="flex-1 overflow-auto">
-          <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4 sm:pt-8">
-
-              <div className="mt-6 text-center text-lg">{`AI-powered Q & A, backed by DFAT reports`}</div>
+          <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4">
               <div className="relative w-full mt-4">
                 <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
 
@@ -164,7 +164,7 @@ export default function Home() {
 
                 {chunks.length ? (
                   <>
-                    <div className="font-bold text-2xl mt-6">Passages</div>
+                    <div className="font-bold text-2xl mt-6">Sources</div>
                     <div className="animate-pulse mt-2">
                       <div className="h-4 bg-gray-300 rounded"></div>
                       <div className="h-4 bg-gray-300 rounded mt-2"></div>
@@ -176,11 +176,11 @@ export default function Home() {
               </div>
             ) : (
               <div className="mt-6 w-full">
-                <div className="font-bold text-2xl mb-2">Answer</div>
+                {answer.length ? (<div className="font-bold text-2xl mb-2">Answer</div>) : ''}
                 <Answer text={answer} />
 
                 <div className="mt-6 mb-16">
-                {chunks.length ? (<div className="font-bold text-2xl">Passages</div>) : ''}
+                {chunks.length ? (<div className="font-bold text-2xl">Sources</div>) : ''}
 
                   {chunks.map((chunk, index) => (
                     <div key={index}>
