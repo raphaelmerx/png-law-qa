@@ -14,6 +14,22 @@ import LogRocket from 'logrocket';
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 if (process.env.NODE_ENV === 'production') LogRocket.init('jymlud/chat-langchain-dfat');
 
+
+function ExampleChip({ text, onClick }: { text: string; onClick: (text: string) => void}) {
+
+    const handleClick = () => {
+        onClick(text);
+    }
+
+    return (
+        <div
+          className="inline-flex items-center px-3 py-1 mt-3 mr-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
+          onClick={handleClick}>
+          {text}
+        </div>
+    )
+}
+
 export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,16 +37,23 @@ export default function Home() {
   const [chunks, setChunks] = useState<DocumentChunk[]>([]);
   const [answer, setAnswer] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-
+  const [showExamples, setShowExamples] = useState<boolean>(true);
 
   const [matchCount, setMatchCount] = useState<number>(5);
 
-  const handleAnswer = async () => {
-    if (!query) {
+  const onClickChip = (text: string) => {
+    setQuery(text);
+    handleAnswer(text);
+  }
+
+  const handleAnswer = async (text: string) => {
+    if (!text) {
       alert('Please enter a query.');
       return;
     }
+    if (loading) { return; }
   
+    setShowExamples(false)
     setAnswer('');
     setChunks([]);
   
@@ -42,7 +65,7 @@ export default function Home() {
     // Set up the WebSocket event listeners
     socket.onopen = (event) => {
       // Send the query once the WebSocket connection is open
-      socket.send(query);
+      socket.send(text);
     };
   
     socket.onmessage = (event) => {
@@ -74,7 +97,7 @@ export default function Home() {
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleAnswer();
+      handleAnswer(query);
     }
   };
 
@@ -145,12 +168,18 @@ export default function Home() {
 
                 <button>
                   <IconArrowRight
-                    onClick={handleAnswer}
+                    onClick={() => handleAnswer(query)}
                     className="absolute right-2 top-2.5 h-7 w-7 rounded-full bg-blue-500 p-1 hover:cursor-pointer hover:bg-blue-600 sm:right-3 sm:top-3 sm:h-10 sm:w-10 text-white"
                   />
                 </button>
               </div>
 
+            {showExamples && (
+                <div className="w-full">
+                    <ExampleChip text="What is the budget of the PHD program in Timor-Leste?" onClick={onClickChip} />
+                    <ExampleChip text="Programs transitioned to GoTL?" onClick={onClickChip} />
+                </div>
+            )}
             {loading ? (
               <div className="mt-6 w-full">
                   <>
