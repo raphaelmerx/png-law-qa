@@ -39,7 +39,7 @@ export const Navbar: FC = () => {
         </a>
         <a
           className="flex items-center hover:opacity-50"
-          href="https://www.rapha.dev"
+          href="https://www.rapha.dev/blog/dfat-qa"
           target="_blank"
           rel="noreferrer"
         >
