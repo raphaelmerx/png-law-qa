@@ -60,7 +60,7 @@ export default function Home() {
     setLoading(true);
   
     // Create a WebSocket connection to the '/chat' endpoint
-    const socket = new WebSocket(`${BACKEND_URL}/chat`);
+    const socket = new WebSocket(`${BACKEND_URL}/chat-ndoh`);
   
     // Set up the WebSocket event listeners
     socket.onopen = (event) => {
@@ -134,10 +134,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>DFAT Q&A</title>
+        <title>NHSS Q&A</title>
         <meta
           name="description"
-          content={`AI-powered Q&A backed by DFAT reports`}
+          content={`AI-powered answers on the PNG National Health Service Standards`}
         />
         <meta
           name="viewport"
@@ -160,7 +160,7 @@ export default function Home() {
                   ref={inputRef}
                   className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                   type="text"
-                  placeholder="What is JSS4D?"
+                  placeholder="What are the different categories of health facilities?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -176,8 +176,8 @@ export default function Home() {
 
             {showExamples && (
                 <div className="w-full">
-                    <ExampleChip text="What is the budget of the PHD program in Timor-Leste?" onClick={onClickChip} />
-                    <ExampleChip text="Programs transitioned to GoTL?" onClick={onClickChip} />
+                    <ExampleChip text="What is the process for referral?" onClick={onClickChip} />
+                    <ExampleChip text="What are the monthly reporting requirements for health centres?" onClick={onClickChip} />
                 </div>
             )}
             {loading ? (
@@ -222,14 +222,16 @@ export default function Home() {
                               <div className="font-bold text-xl">{chunk.title}</div>
                             </div>
                           </div>
-                          <a
-                            className="hover:opacity-50 ml-4"
-                            href={chunk.url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            <IconExternalLink />
-                          </a>
+                          {chunk.url && (
+                            <a
+                                className="hover:opacity-50 ml-4"
+                                href={chunk.url}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                <IconExternalLink />
+                            </a>
+                          )}
                         </div>
                         <div className="mt-4">{chunk.content}</div>
                       </div>
