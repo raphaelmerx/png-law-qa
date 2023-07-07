@@ -176,7 +176,7 @@ export default function Home() {
 
             {showExamples && (
                 <div className="w-full">
-                    <ExampleChip text="What is the process for referral?" onClick={onClickChip} />
+                    <ExampleChip text="What is a PHIO?" onClick={onClickChip} />
                     <ExampleChip text="What are the monthly reporting requirements for health centres?" onClick={onClickChip} />
                 </div>
             )}
