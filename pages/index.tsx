@@ -233,7 +233,9 @@ export default function Home() {
                             </a>
                           )}
                         </div>
-                        <div className="mt-4">{chunk.content}</div>
+                        <div className="mt-4">
+                            <Answer text={chunk.content} />
+                        </div>
                       </div>
                     </div>
                   ))}

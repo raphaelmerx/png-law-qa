@@ -16,7 +16,7 @@ export type DocumentChunk = {
   title: string;
   url: string;
   post_date: string | undefined;
-  content: string | undefined;
+  content: string;
 };
 
 export type WBWJSON = {
