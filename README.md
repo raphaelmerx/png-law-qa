@@ -1,9 +1,9 @@
-# Q&A on the NDoH Health Service Standards
+# Q&A on the Family Law in PNG
 
 
-React (NextJS) frontend for asking questions about the PNG Health Service Standards. An AI-powered backend then tries to answer, sending sources used.
+React (NextJS) frontend for asking questions about PNG Family Law. An AI-powered backend then tries to answer, sending sources used.
 
-Deployed at https://ndoh.vercel.app/
+Deployed at https://familylaw.rapha.dev/
 
 ### Local setup
 

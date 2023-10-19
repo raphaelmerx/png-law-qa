@@ -8,11 +8,20 @@ export const Footer: FC = () => {
         All data sourced from
         <a
           className="hover:opacity-50 mx-1"
-          href="https://www.health.gov.pg"
+          href="https://femilipng.org/wp-content/uploads/Family-Protection-Act-2013.pdf"
           target="_blank"
           rel="noreferrer"
         >
-          the National Health Service Standards for Papua New Guinea
+          the Family Protection Act 2013 (amended 2022)
+        </a>
+        and 
+        <a
+          className="hover:opacity-50 mx-1"
+          href="https://femilipng.org/wp-content/uploads/Family-Protection-Regulation-2017.pdf"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Family Protection Regulation 2017
         </a>
         .
       </div>

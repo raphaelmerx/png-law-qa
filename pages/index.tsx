@@ -60,7 +60,7 @@ export default function Home() {
     setLoading(true);
   
     // Create a WebSocket connection to the '/chat' endpoint
-    const socket = new WebSocket(`${BACKEND_URL}/chat-ndoh`);
+    const socket = new WebSocket(`${BACKEND_URL}/chat-pnglaw`);
   
     // Set up the WebSocket event listeners
     socket.onopen = (event) => {
@@ -134,10 +134,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>NHSS Q&A</title>
+        <title>PNG law Q&A</title>
         <meta
           name="description"
-          content={`AI-powered answers on the PNG National Health Service Standards`}
+          content={`AI-powered answers on Family Protection law in Papua New Guinea`}
         />
         <meta
           name="viewport"
@@ -160,7 +160,7 @@ export default function Home() {
                   ref={inputRef}
                   className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
                   type="text"
-                  placeholder="What are the different categories of health facilities?"
+                  placeholder="Enter a question here"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   onKeyDown={handleKeyDown}
@@ -176,8 +176,8 @@ export default function Home() {
 
             {showExamples && (
                 <div className="w-full">
-                    <ExampleChip text="What is a PHIO?" onClick={onClickChip} />
-                    <ExampleChip text="What are the monthly reporting requirements for health centres?" onClick={onClickChip} />
+                    <ExampleChip text="What are the maximum provisions for domestic violence?" onClick={onClickChip} />
+                    <ExampleChip text="What is a protection order?" onClick={onClickChip} />
                 </div>
             )}
             {loading ? (
