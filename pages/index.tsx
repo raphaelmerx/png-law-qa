@@ -176,8 +176,8 @@ export default function Home() {
 
             {showExamples && (
                 <div className="w-full">
-                    <ExampleChip text="What are the maximum provisions for domestic violence?" onClick={onClickChip} />
-                    <ExampleChip text="What is a protection order?" onClick={onClickChip} />
+                    <ExampleChip text="How can I get protection from domestic violence?" onClick={onClickChip} />
+                    <ExampleChip text="How can the Village Court assist?" onClick={onClickChip} />
                 </div>
             )}
             {loading ? (
