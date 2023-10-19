@@ -134,7 +134,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>PNG law Q&A</title>
+        <title>Family law Q&A</title>
         <meta
           name="description"
           content={`AI-powered answers on Family Protection law in Papua New Guinea`}
