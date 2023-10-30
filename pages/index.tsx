@@ -3,31 +3,62 @@ import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { DocumentChunk } from "@/types";
 import { getImage } from "@/utils/images";
-import { IconArrowRight, IconExternalLink, IconSearch } from "@tabler/icons-react";
+import {
+  IconArrowRight,
+  IconExternalLink,
+  IconSearch,
+} from "@tabler/icons-react";
 import endent from "endent";
 import Head from "next/head";
 import Image from "next/image";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import LogRocket from 'logrocket';
 
+import LogRocket from "logrocket";
+import * as Sentry from "@sentry/react";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-if (process.env.NODE_ENV === 'production') LogRocket.init('jymlud/chat-langchain-dfat');
+if (process.env.NODE_ENV === "production") {
+  LogRocket.init("jymlud/chat-langchain-dfat");
+  Sentry.init({
+    dsn: "https://1bef359341aa91ee2fc4af7c73767b91@o402599.ingest.sentry.io/4506136625741824",
+    integrations: [
+      new Sentry.BrowserTracing({
+        // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+        tracePropagationTargets: [
+          "localhost",
+          /^https:\/\/ndoh\.temp\.build/,
+          /^wss:\/\/ndoh\.temp\.build/,
+        ],
+      }),
+      new Sentry.Replay(),
+    ],
+    // Performance Monitoring
+    tracesSampleRate: 0.0, // Capture 0% of the transactions
+    // Session Replay
+    replaysSessionSampleRate: 0.0, // This sets the sample rate at 0%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+  });
+}
 
+function ExampleChip({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: (text: string) => void;
+}) {
+  const handleClick = () => {
+    onClick(text);
+  };
 
-function ExampleChip({ text, onClick }: { text: string; onClick: (text: string) => void}) {
-
-    const handleClick = () => {
-        onClick(text);
-    }
-
-    return (
-        <div
-          className="inline-flex items-center px-3 py-1 mt-3 mr-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
-          onClick={handleClick}>
-          {text}
-        </div>
-    )
+  return (
+    <div
+      className="inline-flex items-center px-3 py-1 mt-3 mr-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
+      onClick={handleClick}
+    >
+      {text}
+    </div>
+  );
 }
 
 export default function Home() {
@@ -44,54 +75,58 @@ export default function Home() {
   const onClickChip = (text: string) => {
     setQuery(text);
     handleAnswer(text);
-  }
+  };
 
   const handleAnswer = async (text: string) => {
     if (!text) {
-      alert('Please enter a query.');
+      alert("Please enter a query.");
       return;
     }
-    if (loading) { return; }
-  
-    setShowExamples(false)
-    setAnswer('');
+    if (loading) {
+      return;
+    }
+
+    setShowExamples(false);
+    setAnswer("");
     setChunks([]);
-  
+
     setLoading(true);
-  
+
     // Create a WebSocket connection to the '/chat' endpoint
     const socket = new WebSocket(`${BACKEND_URL}/chat-pnglaw`);
-  
+
     // Set up the WebSocket event listeners
     socket.onopen = (event) => {
       // Send the query once the WebSocket connection is open
       socket.send(text);
     };
-  
+
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setLoading(false);
-  
+
       // Check if the received data has a 'message' key
-      if (data.hasOwnProperty('message') && data.sender === 'bot') {
+      if (data.hasOwnProperty("message") && data.sender === "bot") {
         // Update the answer with the received message
         setAnswer((prev) => prev + data.message);
       }
-  
+
       // Close the WebSocket connection if the server has indicated that it's done sending messages
-      if (data.type && data.type === 'end') {
+      if (data.type && data.type === "end") {
         setLoading(false);
       }
-      if (data.type && data.type === 'sources') {
-        setChunks(data.sources)
+      if (data.type && data.type === "sources") {
+        setChunks(data.sources);
         socket.close();
       }
     };
-  
+
     socket.onerror = (error) => {
       setLoading(false);
-      console.error('WebSocket error:', error);
-      alert('An error occurred while trying to connect to the server. Please try again later.');
+      console.error("WebSocket error:", error);
+      alert(
+        "An error occurred while trying to connect to the server. Please try again later."
+      );
     };
   };
 
@@ -103,7 +138,6 @@ export default function Home() {
 
   const handleSave = () => {
     localStorage.setItem("WBW_MATCH_COUNT", matchCount.toString());
-
   };
 
   const handleClear = () => {
@@ -128,7 +162,6 @@ export default function Home() {
     if (WBW_MATCH_COUNT) {
       setMatchCount(parseInt(WBW_MATCH_COUNT));
     }
-
   }, []);
 
   return (
@@ -139,59 +172,59 @@ export default function Home() {
           name="description"
           content={`AI-powered answers on Family Protection law in Papua New Guinea`}
         />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <link
-          rel="icon"
-          href="/favicon.ico"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <div className="flex flex-col h-screen">
         <Navbar />
         <div className="flex-1 overflow-auto">
           <div className="mx-auto flex h-full w-full max-w-[750px] flex-col items-center px-3 pt-4">
-              <div className="relative w-full mt-4">
-                <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
+            <div className="relative w-full mt-4">
+              <IconSearch className="absolute top-3 w-10 left-1 h-6 rounded-full opacity-50 sm:left-3 sm:top-4 sm:h-8" />
 
-                <input
-                  ref={inputRef}
-                  className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
-                  type="text"
-                  placeholder="Enter a question here"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleKeyDown}
+              <input
+                ref={inputRef}
+                className="h-12 w-full rounded-full border border-zinc-600 pr-12 pl-11 focus:border-zinc-800 focus:outline-none focus:ring-1 focus:ring-zinc-800 sm:h-16 sm:py-2 sm:pr-16 sm:pl-16 sm:text-lg"
+                type="text"
+                placeholder="Enter a question here"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+
+              <button>
+                <IconArrowRight
+                  onClick={() => handleAnswer(query)}
+                  className="absolute right-2 top-2.5 h-7 w-7 rounded-full bg-blue-500 p-1 hover:cursor-pointer hover:bg-blue-600 sm:right-3 sm:top-3 sm:h-10 sm:w-10 text-white"
                 />
-
-                <button>
-                  <IconArrowRight
-                    onClick={() => handleAnswer(query)}
-                    className="absolute right-2 top-2.5 h-7 w-7 rounded-full bg-blue-500 p-1 hover:cursor-pointer hover:bg-blue-600 sm:right-3 sm:top-3 sm:h-10 sm:w-10 text-white"
-                  />
-                </button>
-              </div>
+              </button>
+            </div>
 
             {showExamples && (
-                <div className="w-full">
-                    <ExampleChip text="How can I get protection from domestic violence?" onClick={onClickChip} />
-                    <ExampleChip text="How can the Village Court assist?" onClick={onClickChip} />
-                </div>
+              <div className="w-full">
+                <ExampleChip
+                  text="How can I get protection from domestic violence?"
+                  onClick={onClickChip}
+                />
+                <ExampleChip
+                  text="How can the Village Court assist?"
+                  onClick={onClickChip}
+                />
+              </div>
             )}
             {loading ? (
               <div className="mt-6 w-full">
-                  <>
-                    <div className="font-bold text-2xl">Answer</div>
-                    <div className="animate-pulse mt-2">
-                      <div className="h-4 bg-gray-300 rounded"></div>
-                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                      <div className="h-4 bg-gray-300 rounded mt-2"></div>
-                    </div>
-                  </>
+                <>
+                  <div className="font-bold text-2xl">Answer</div>
+                  <div className="animate-pulse mt-2">
+                    <div className="h-4 bg-gray-300 rounded"></div>
+                    <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                    <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                    <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                    <div className="h-4 bg-gray-300 rounded mt-2"></div>
+                  </div>
+                </>
 
                 {chunks.length ? (
                   <>
@@ -203,15 +236,26 @@ export default function Home() {
                       <div className="h-4 bg-gray-300 rounded mt-2"></div>
                       <div className="h-4 bg-gray-300 rounded mt-2"></div>
                     </div>
-                  </>) : ''}
+                  </>
+                ) : (
+                  ""
+                )}
               </div>
             ) : (
               <div className="mt-6 w-full">
-                {answer.length ? (<div className="font-bold text-2xl mb-2">Answer</div>) : ''}
+                {answer.length ? (
+                  <div className="font-bold text-2xl mb-2">Answer</div>
+                ) : (
+                  ""
+                )}
                 <Answer text={answer} />
 
                 <div className="mt-6 mb-16">
-                {chunks.length ? (<div className="font-bold text-2xl">Sources</div>) : ''}
+                  {chunks.length ? (
+                    <div className="font-bold text-2xl">Sources</div>
+                  ) : (
+                    ""
+                  )}
 
                   {chunks.map((chunk, index) => (
                     <div key={index}>
@@ -219,22 +263,24 @@ export default function Home() {
                         <div className="flex justify-between">
                           <div className="flex items-center">
                             <div>
-                              <div className="font-bold text-xl">{chunk.title}</div>
+                              <div className="font-bold text-xl">
+                                {chunk.title}
+                              </div>
                             </div>
                           </div>
                           {chunk.url && (
                             <a
-                                className="hover:opacity-50 ml-4"
-                                href={chunk.url}
-                                target="_blank"
-                                rel="noreferrer"
+                              className="hover:opacity-50 ml-4"
+                              href={chunk.url}
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                                <IconExternalLink />
+                              <IconExternalLink />
                             </a>
                           )}
                         </div>
                         <div className="mt-4">
-                            <Answer text={chunk.content} />
+                          <Answer text={chunk.content} />
                         </div>
                       </div>
                     </div>

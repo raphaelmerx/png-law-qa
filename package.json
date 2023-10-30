@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@next/font": "^13.2.3",
+    "@sentry/react": "^7.76.0",
     "@tabler/icons-react": "^2.7.0",
     "@types/node": "18.14.2",
     "@types/react": "18.0.28",
